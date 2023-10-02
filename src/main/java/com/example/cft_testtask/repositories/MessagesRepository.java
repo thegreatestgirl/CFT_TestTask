@@ -15,6 +15,6 @@ public interface MessagesRepository {
 
     void addNewReader(Reader newReader);
     void updateReader(Reader updatedReader);
-//    void deleteItemById(Integer id);
+    void deleteItemById(Integer valId, String table);
 }
 

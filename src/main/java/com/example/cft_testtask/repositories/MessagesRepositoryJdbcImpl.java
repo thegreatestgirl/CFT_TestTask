@@ -121,7 +121,6 @@ public class MessagesRepositoryJdbcImpl implements MessagesRepository {
 
     @Override
     public void updateReader(Reader updatedReader) {
-        System.out.println(updatedReader.getName());
         try (Connection con = dataSource.getConnection();
              Statement st = con.createStatement()) {
             String mQuery = "select id, surname, name, patronymic, dateofbirth from readers where id = ";
@@ -130,7 +129,6 @@ public class MessagesRepositoryJdbcImpl implements MessagesRepository {
             while (rs.next()) {
 
                 Reader oldReader = new Reader(rs.getInt("id"), rs.getString("surname"), rs.getString("name"), rs.getString("patronymic"), rs.getDate("dateOfBirth"));
-                System.out.println(oldReader.getName());
 
                 if (!oldReader.getSurname().equals(updatedReader.getSurname()) ||
                     !oldReader.getName().equals(updatedReader.getName()) ||
@@ -144,6 +142,17 @@ public class MessagesRepositoryJdbcImpl implements MessagesRepository {
                             "WHERE id = " + updatedReader.getId());
                 }
             }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public void deleteItemById(Integer valId, String table) {
+        try (Connection con = dataSource.getConnection();
+             Statement st = con.createStatement()) {
+
+            ResultSet rs = st.executeQuery("DELETE FROM " + table + " WHERE id = " + valId);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

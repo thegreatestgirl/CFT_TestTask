@@ -164,11 +164,8 @@ public class HelloController implements Initializable {
 
             JdbcDataSource dataSource = new JdbcDataSource();
             MessagesRepository repository = new MessagesRepositoryJdbcImpl(dataSource.getDataSource());
-            System.out.println(controller.getReaderProperties().getId());
             repository.updateReader(controller.getReaderProperties());
             readersView.setItems(FXCollections.observableList(repository.getAllReaders()));
-            // добавляем в список
-            //this.foodList.add(newFood);
         }
     }
 
@@ -185,15 +182,22 @@ public class HelloController implements Initializable {
 
         System.out.println(basic.getId());
 
-        // выдаем подтверждающее сообщение
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Подтверждение");
         alert.setHeaderText(String.format("Точно удалить?"));
 
-        // если пользователь нажал OK
         Optional<ButtonType> option = alert.showAndWait();
         if (option.get() == ButtonType.OK) {
-            // удаляем строку из таблицы
+            JdbcDataSource dataSource = new JdbcDataSource();
+            MessagesRepository repository = new MessagesRepositoryJdbcImpl(dataSource.getDataSource());
+            if (readersTab.isSelected()) {
+                repository.deleteItemById(basic.getId(), "readers");
+            } else if (booksTab.isSelected()) {
+                repository.deleteItemById(basic.getId(), "books");
+            } else if (bookedBooksTab.isSelected()) {
+                repository.deleteItemById(basic.getId(), "booked_books");
+            }
+
             readersView.getItems().remove(basic);
         }
     }
