@@ -4,19 +4,29 @@ import com.example.cft_testtask.models.Book;
 import com.example.cft_testtask.models.Booking;
 import com.example.cft_testtask.models.Reader;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import com.example.cft_testtask.repositories.*;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 
 public class HelloController implements Initializable {
+    @FXML
+    private Button addReaderButton;
 
     @FXML
     private TableView<Reader> readersView;
@@ -94,5 +104,26 @@ public class HelloController implements Initializable {
         readersView.setItems(FXCollections.observableList(repository.getAllReaders()));
         booksView.setItems(FXCollections.observableList(repository.getAllBooks()));
         bookingsView.setItems(FXCollections.observableList(repository.getAllBookings()));
+    }
+
+    public void onAddReaderClick(ActionEvent actionEvent) throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("readerAdd.fxml"));
+        Parent root = loader.load();
+        Stage stage = new Stage();
+        stage.setScene(new Scene(root));
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.initOwner(this.readersView.getScene().getWindow());
+        stage.showAndWait();
+
+        ReaderAddController controller = loader.getController();
+        if (controller.getModalResult()) {
+            JdbcDataSource dataSource = new JdbcDataSource();
+            MessagesRepository repository = new MessagesRepositoryJdbcImpl(dataSource.getDataSource());
+            repository.addNewReader(controller.getReader());
+            readersView.setItems(FXCollections.observableList(repository.getAllReaders()));
+            // добавляем в список
+            //this.foodList.add(newFood);
+        }
     }
 }

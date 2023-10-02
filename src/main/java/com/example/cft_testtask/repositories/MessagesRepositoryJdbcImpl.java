@@ -9,8 +9,11 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class MessagesRepositoryJdbcImpl implements MessagesRepository {
     private DataSource dataSource;
@@ -83,52 +86,19 @@ public class MessagesRepositoryJdbcImpl implements MessagesRepository {
         return List.of();
     }
 
-//    @Override
-//    public Optional<Message> findById(Long id) {
-//        String mQuery = "SELECT * FROM readers WHERE id = " + id;
-//
-//        try (Connection con = dataSource.getConnection();
-//             Statement st = con.createStatement()) {
-//            ResultSet rs = st.executeQuery(mQuery);
-//
-//            if (!rs.next()) {
-//                return Optional.empty();
-//            }
-//            Long userId = rs.getLong(2);
-//            Long roomId = rs.getLong(3);
-//            Reader user = findUser(userId);
-//            Chatroom room = findChat(roomId);
-//            return Optional.of(new Message(rs.getLong(1), user, room,
-//                    rs.getString(4), rs.getTimestamp(5).toLocalDateTime()));
-//        } catch (SQLException e) {
-//            System.out.println(e.getMessage());
-//        }
-//        return Optional.empty();
-//    }
+    @Override
+    public void addNewReader(Reader newReader) {
+        try (Connection con = dataSource.getConnection();
+             Statement st = con.createStatement()) {
 
-//    private Reader findUser(Long id) throws SQLException {
-//        String uQuery = "SELECT * FROM readers WHERE id = " + id;
-//
-//        try (Connection con = dataSource.getConnection();
-//             Statement st = con.createStatement()) {
-//            ResultSet rs = st.executeQuery(uQuery);
-//            if (!rs.next()) {
-//                return null;
-//            }
-//            //return new Reader(id, rs.getString(2), rs.getString(3));
-//        }
-//    }
+            SimpleDateFormat dmyFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String formattedDateStr = dmyFormat.format(newReader.getDateOfBirth());
 
-//    private Chatroom findChat(Long id) throws SQLException {
-////        String cQuery = "SELECT * FROM readers WHERE id = " + id;
-////
-////        try (Connection con = dataSource.getConnection();
-////             Statement st = con.createStatement()) {
-////            ResultSet rs = st.executeQuery(cQuery);
-////            if (!rs.next()) {
-////                return null;
-////            }
-////            return new Chatroom(id, rs.getString(2));
-////        }
-//    }
+            ResultSet rs = st.executeQuery("INSERT INTO readers(surname, name, patronymic, dateOfBirth)" +
+                    "VALUES (\'" + newReader.getSurname() + "\', \'" + newReader.getName() + "\', \'" + newReader.getPatronymic() + "\', \'" + formattedDateStr + "\') RETURNING id");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
 }

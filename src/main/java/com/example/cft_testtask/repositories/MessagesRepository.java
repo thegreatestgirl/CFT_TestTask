@@ -10,6 +10,8 @@ public interface MessagesRepository {
     List<Reader> getAllReaders();
     List<Book> getAllBooks();
     List<Booking> getAllBookings();
+
+    void addNewReader(Reader newReader);
     //Optional<Message> findById(Long id);
 }
 
