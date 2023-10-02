@@ -1,5 +1,6 @@
 package com.example.cft_testtask.repositories;
 
+import com.example.cft_testtask.BookingAddController;
 import com.example.cft_testtask.models.Book;
 import com.example.cft_testtask.models.Booking;
 import com.example.cft_testtask.models.Reader;
@@ -120,11 +121,41 @@ public class MessagesRepositoryJdbcImpl implements MessagesRepository {
     }
 
     @Override
+    public void addNewBook(Book newBook) {
+        try (Connection con = dataSource.getConnection();
+             Statement st = con.createStatement()) {
+            ResultSet rs = st.executeQuery("INSERT INTO books(name, author, year)" +
+                    "VALUES (\'" + newBook.getName() + "\', \'" + newBook.getAuthor() + "\', \'" + newBook.getYear() + "\') RETURNING id");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public void addNewBooking(Booking newBooking) {
+        try (Connection con = dataSource.getConnection();
+             Statement st = con.createStatement()) {
+
+            SimpleDateFormat dmyFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String formattedGivenDate = dmyFormat.format(newBooking.getGivenDate());
+            String formattedReturnDate = dmyFormat.format(newBooking.getReturnDate());
+
+            ResultSet rs = st.executeQuery("INSERT INTO booked_books(readerid, bookid, givendate, returndate) " +
+                                        "VALUES ((SELECT id FROM readers WHERE readers.surname = \'" + newBooking.getReaderSurname() + "\' " +
+                                        "AND readers.name = \'" + newBooking.getReaderName() + "\' " +
+                                        "AND readers.patronymic = \'" + newBooking.getReaderPatronymic() + "\'), " +
+                                        "(SELECT id FROM books WHERE books.name = \'" + newBooking.getBookName() + "\'), " +
+                                        "\'" + newBooking.getGivenDate() + "\', \'" + newBooking.getReturnDate() + "\') RETURNING id");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Override
     public void updateReader(Reader updatedReader) {
         try (Connection con = dataSource.getConnection();
              Statement st = con.createStatement()) {
             String mQuery = "select id, surname, name, patronymic, dateofbirth from readers where id = ";
-            System.out.println(mQuery);
             ResultSet rs = st.executeQuery(mQuery + updatedReader.getId());
             while (rs.next()) {
 
@@ -140,6 +171,31 @@ public class MessagesRepositoryJdbcImpl implements MessagesRepository {
                             "patronymic = \'" + updatedReader.getPatronymic() + "\', " +
                             "dateofbirth = \'" + updatedReader.getDateOfBirth() + "\' " +
                             "WHERE id = " + updatedReader.getId());
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public void updateBook(Book updatedBook) {
+        try (Connection con = dataSource.getConnection();
+             Statement st = con.createStatement()) {
+            String mQuery = "select id, name, author, year from books where id = ";
+            ResultSet rs = st.executeQuery(mQuery + updatedBook.getId());
+            while (rs.next()) {
+
+                Book oldBook = new Book(rs.getInt("id"), rs.getString("name"), rs.getString("author"), rs.getInt("year"));
+
+                if (!oldBook.getName().equals(updatedBook.getName()) ||
+                        !oldBook.getAuthor().equals(updatedBook.getAuthor()) ||
+                        !oldBook.getYear().equals(updatedBook.getYear())) {
+                    rs = st.executeQuery("UPDATE books " +
+                            "SET name = \'" + updatedBook.getName() + "\', " +
+                            "author = \'" + updatedBook.getAuthor() + "\', " +
+                            "year = " + updatedBook.getYear() + " " +
+                            "WHERE id = " + updatedBook.getId());
                 }
             }
         } catch (SQLException e) {

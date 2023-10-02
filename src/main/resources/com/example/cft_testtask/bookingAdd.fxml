@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cft_testtask.BookingAddController">
+   <children>
+      <TextField fx:id="surnameInput" layoutX="161.0" layoutY="42.0" />
+      <Text layoutX="56.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Surname" wrappingWidth="81.24566650390625" />
+      <TextField fx:id="nameInput" layoutX="161.0" layoutY="87.0" />
+      <Text layoutX="56.0" layoutY="104.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name" wrappingWidth="81.24566650390625" />
+      <TextField fx:id="patronymicInput" layoutX="161.0" layoutY="130.0" />
+      <Text layoutX="56.0" layoutY="147.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Patronymic" wrappingWidth="81.24566650390625" />
+      <DatePicker fx:id="givenDateInput" layoutX="161.0" layoutY="204.0">
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </DatePicker>
+      <Text layoutX="56.0" layoutY="221.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Given date" wrappingWidth="81.24566650390625" />
+      <Button fx:id="bookingApplyButton" layoutX="137.0" layoutY="296.0" mnemonicParsing="false" onAction="#onBookingApplyClick" text="OK" />
+      <Button fx:id="bookingCancelButton" layoutX="186.0" layoutY="296.0" mnemonicParsing="false" onAction="#onBookingCancelClick" text="Cancel" />
+      <TextField fx:id="bookNameInput" layoutX="162.0" layoutY="166.0" />
+      <Text layoutX="57.0" layoutY="183.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Book name" wrappingWidth="81.24566650390625" />
+      <DatePicker fx:id="returnDateInput" layoutX="161.0" layoutY="242.0">
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </DatePicker>
+      <Text layoutX="56.0" layoutY="259.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Return date" wrappingWidth="81.24566650390625" />
+   </children>
+</AnchorPane>

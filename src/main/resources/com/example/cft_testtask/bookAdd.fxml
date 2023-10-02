@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cft_testtask.BookAddController">
+   <children>
+      <TextField fx:id="nameInput" layoutX="161.0" layoutY="42.0" />
+      <Text layoutX="56.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name" wrappingWidth="81.24566650390625" />
+      <TextField fx:id="authorInput" layoutX="161.0" layoutY="87.0" />
+      <Text layoutX="56.0" layoutY="104.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Author" wrappingWidth="81.24566650390625" />
+      <TextField fx:id="yearInput" layoutX="161.0" layoutY="130.0" />
+      <Text layoutX="56.0" layoutY="147.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Year" wrappingWidth="81.24566650390625" />
+      <Button fx:id="bookApplyButton" layoutX="135.0" layoutY="274.0" mnemonicParsing="false" onAction="#onBookApplyClick" text="OK" />
+      <Button fx:id="bookCancelButton" layoutX="184.0" layoutY="274.0" mnemonicParsing="false" onAction="#onBookCancelClick" text="Cancel" />
+   </children>
+</AnchorPane>

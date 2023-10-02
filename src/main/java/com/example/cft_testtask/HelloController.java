@@ -121,47 +121,43 @@ public class HelloController implements Initializable {
         bookingsView.setItems(FXCollections.observableList(repository.getAllBookings()));
     }
 
-    private void openReaderFXMLForm() throws IOException {
-
-    }
-
-    public void onAddReaderClick(ActionEvent actionEvent) throws IOException {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("readerAdd.fxml"));
-        Parent root = loader.load();
-        Stage stage = new Stage();
-        stage.setScene(new Scene(root));
-        stage.initModality(Modality.WINDOW_MODAL);
-        stage.initOwner(this.readersView.getScene().getWindow());
-        stage.showAndWait();
-
+    public void addReader(FXMLLoader loader) throws IOException {
         ReaderAddController controller = loader.getController();
         if (controller.getModalResult()) {
             JdbcDataSource dataSource = new JdbcDataSource();
             MessagesRepository repository = new MessagesRepositoryJdbcImpl(dataSource.getDataSource());
             repository.addNewReader(controller.getReaderProperties());
             readersView.setItems(FXCollections.observableList(repository.getAllReaders()));
-            // добавляем в список
-            //this.foodList.add(newFood);
         }
     }
 
-    public void onUpdateReaderClick(ActionEvent actionEvent) throws IOException {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("readerAdd.fxml"));
-        Parent root = loader.load();
-        Stage stage = new Stage();
-        stage.setScene(new Scene(root));
-        stage.initModality(Modality.WINDOW_MODAL);
-        stage.initOwner(readersView.getScene().getWindow());
-        ReaderAddController controller = loader.getController();
+    public void addBook(FXMLLoader loader) throws IOException {
+        BookAddController controller = loader.getController();
+        if (controller.getModalResult()) {
+            JdbcDataSource dataSource = new JdbcDataSource();
+            MessagesRepository repository = new MessagesRepositoryJdbcImpl(dataSource.getDataSource());
+            repository.addNewBook(controller.getBookProperties());
+            booksView.setItems(FXCollections.observableList(repository.getAllBooks()));
+        }
+    }
 
+    public void addBooking(FXMLLoader loader) throws IOException {
+        BookingAddController controller = loader.getController();
+        if (controller.getModalResult()) {
+            JdbcDataSource dataSource = new JdbcDataSource();
+            MessagesRepository repository = new MessagesRepositoryJdbcImpl(dataSource.getDataSource());
+            repository.addNewBooking(controller.getBookingProperties());
+            bookingsView.setItems(FXCollections.observableList(repository.getAllBookings()));
+        }
+    }
+
+    public void updateReader(FXMLLoader loader, Stage stage) throws IOException {
+        ReaderAddController controller = loader.getController();
         controller.setReader((Reader) readersView.getSelectionModel().getSelectedItem());
 
         stage.showAndWait();
 
         if (controller.getModalResult()) {
-
             JdbcDataSource dataSource = new JdbcDataSource();
             MessagesRepository repository = new MessagesRepositoryJdbcImpl(dataSource.getDataSource());
             repository.updateReader(controller.getReaderProperties());
@@ -169,10 +165,23 @@ public class HelloController implements Initializable {
         }
     }
 
-    public void onDeleteReaderClick(ActionEvent actionEvent) {
+    public void updateBook(FXMLLoader loader, Stage stage) throws IOException {
+        BookAddController controller = loader.getController();
+        controller.setBook((Book) booksView.getSelectionModel().getSelectedItem());
+
+        stage.showAndWait();
+
+        if (controller.getModalResult()) {
+            JdbcDataSource dataSource = new JdbcDataSource();
+            MessagesRepository repository = new MessagesRepositoryJdbcImpl(dataSource.getDataSource());
+            repository.updateBook(controller.getBookProperties());
+            booksView.setItems(FXCollections.observableList(repository.getAllBooks()));
+        }
+    }
+
+    public void onDeleteClick(ActionEvent actionEvent) {
         Basic basic;
         if (readersTab.isSelected()) {
-          //  Reader reader = (Reader) readersView.getSelectionModel().getSelectedItem();
             basic = (Reader)readersView.getSelectionModel().getSelectedItem();
         } else if (booksTab.isSelected()) {
             basic = (Book)booksView.getSelectionModel().getSelectedItem();
@@ -180,11 +189,9 @@ public class HelloController implements Initializable {
             basic = (Booking)bookingsView.getSelectionModel().getSelectedItem();
         }
 
-        System.out.println(basic.getId());
-
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Подтверждение");
-        alert.setHeaderText(String.format("Точно удалить?"));
+        alert.setTitle("Confirm");
+        alert.setHeaderText(String.format("Delete?"));
 
         Optional<ButtonType> option = alert.showAndWait();
         if (option.get() == ButtonType.OK) {
@@ -192,13 +199,66 @@ public class HelloController implements Initializable {
             MessagesRepository repository = new MessagesRepositoryJdbcImpl(dataSource.getDataSource());
             if (readersTab.isSelected()) {
                 repository.deleteItemById(basic.getId(), "readers");
+                readersView.getItems().remove(basic);
             } else if (booksTab.isSelected()) {
                 repository.deleteItemById(basic.getId(), "books");
+                booksView.getItems().remove(basic);
             } else if (bookedBooksTab.isSelected()) {
                 repository.deleteItemById(basic.getId(), "booked_books");
+                bookingsView.getItems().remove(basic);
             }
 
-            readersView.getItems().remove(basic);
+
+        }
+    }
+
+    public void onAddClick(ActionEvent actionEvent) throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        if (readersTab.isSelected()) {
+            loader.setLocation(getClass().getResource("readerAdd.fxml"));
+        } else if (booksTab.isSelected()) {
+            loader.setLocation(getClass().getResource("bookAdd.fxml"));
+        } else {
+            loader.setLocation(getClass().getResource("bookingAdd.fxml"));
+        }
+        Parent root = loader.load();
+        Stage stage = new Stage();
+        stage.setScene(new Scene(root));
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.initOwner(this.readersView.getScene().getWindow());
+        stage.showAndWait();
+
+        if (readersTab.isSelected()) {
+            addReader(loader);
+        } else if (booksTab.isSelected()) {
+            addBook(loader);
+        } else {
+            addBooking(loader);
+        }
+    }
+
+    public void onUpdateClick(ActionEvent actionEvent) throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        if (readersTab.isSelected()) {
+            loader.setLocation(getClass().getResource("readerAdd.fxml"));
+        } else if (booksTab.isSelected()) {
+            loader.setLocation(getClass().getResource("bookAdd.fxml"));
+        } else {
+            loader.setLocation(getClass().getResource("bookingAdd.fxml"));
+        }
+        Parent root = loader.load();
+        Stage stage = new Stage();
+        stage.setScene(new Scene(root));
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.initOwner(readersView.getScene().getWindow());
+
+
+        if (readersTab.isSelected()) {
+            updateReader(loader, stage);
+        } else if (booksTab.isSelected()) {
+            updateBook(loader, stage);
+        } else {
+
         }
     }
 }

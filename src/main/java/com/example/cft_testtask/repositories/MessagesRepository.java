@@ -14,7 +14,10 @@ public interface MessagesRepository {
     Integer getLastIdAtTable();
 
     void addNewReader(Reader newReader);
+    void addNewBook(Book newBook);
+    void addNewBooking(Booking newBooking);
     void updateReader(Reader updatedReader);
+    void updateBook(Book updatedBook);
     void deleteItemById(Integer valId, String table);
 }
 
