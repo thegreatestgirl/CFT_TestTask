@@ -1,18 +1,16 @@
 package com.example.cft_testtask.repositories;
 
-import com.example.cft_testtask.Book;
-import com.example.cft_testtask.Booking;
-import com.example.cft_testtask.Reader;
+import com.example.cft_testtask.models.Book;
+import com.example.cft_testtask.models.Booking;
+import com.example.cft_testtask.models.Reader;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class MessagesRepositoryJdbcImpl implements MessagesRepository {
     private DataSource dataSource;
@@ -66,7 +64,7 @@ public class MessagesRepositoryJdbcImpl implements MessagesRepository {
         String mQuery = "SELECT booked_books.id AS id, readers.surname AS readerSurname, readers.name AS readerName, " +
                 "readers.patronymic AS readerPatronymic, books.name AS bookName, givendate, returndate FROM booked_books " +
                 "JOIN readers ON booked_books.readerid = readers.id " +
-                "JOIN books ON booked_books.bookid = books.id";
+                "JOIN books ON booked_books.bookid = books.id"; //order by current bookings?
 
         try (Connection con = dataSource.getConnection();
              Statement st = con.createStatement()) {

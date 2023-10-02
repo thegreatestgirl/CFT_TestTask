@@ -1,11 +1,10 @@
 package com.example.cft_testtask.repositories;
 
-import com.example.cft_testtask.Book;
-import com.example.cft_testtask.Booking;
-import com.example.cft_testtask.Reader;
+import com.example.cft_testtask.models.Book;
+import com.example.cft_testtask.models.Booking;
+import com.example.cft_testtask.models.Reader;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface MessagesRepository {
     List<Reader> getAllReaders();

@@ -1,4 +1,4 @@
-package com.example.cft_testtask;
+package com.example.cft_testtask.models;
 
 public class Book {
     Integer id, year;

@@ -1,4 +1,4 @@
-package com.example.cft_testtask;
+package com.example.cft_testtask.models;
 
 import java.time.LocalDate;
 import java.util.Date;
