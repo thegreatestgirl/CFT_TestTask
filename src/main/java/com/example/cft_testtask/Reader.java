@@ -1,7 +1,5 @@
 package com.example.cft_testtask;
 
-import com.example.cft_testtask.models.Chatroom;
-
 import java.time.LocalDate;
 import java.util.Date;
 

@@ -17,47 +17,80 @@ import com.example.cft_testtask.repositories.*;
 public class HelloController implements Initializable {
 
     @FXML
-    private TableView<Reader> tblView;
+    private TableView<Reader> readersView;
 
     @FXML
-    private Label welcomeText;
+    private TableView<Book> booksView;
 
     @FXML
-    protected void onHelloButtonClick() {
-        welcomeText.setText("Welcome to JavaFX Application!");
-    }
+    private TableView<Booking> bookingsView;
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        tblView.getColumns().clear();
+    private void readersTableInitialize() {
+        readersView.getColumns().clear();
+
         TableColumn idCol = new TableColumn<>("id");
         TableColumn surnameCol = new TableColumn<>("surname");
         TableColumn nameCol = new TableColumn<>("name");
         TableColumn patronymicCol = new TableColumn<>("patronymic");
         TableColumn dateOfBirthCol = new TableColumn<>("dateOfBirth");
 
-        tblView.getColumns().addAll(idCol, surnameCol, nameCol, patronymicCol, dateOfBirthCol);
+        readersView.getColumns().addAll(idCol, surnameCol, nameCol, patronymicCol, dateOfBirthCol);
 
         idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         surnameCol.setCellValueFactory(new PropertyValueFactory<>("surname"));
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         patronymicCol.setCellValueFactory(new PropertyValueFactory<>("patronymic"));
         dateOfBirthCol.setCellValueFactory(new PropertyValueFactory<>("dateOfBirth"));
-        //patronymicCol.setCellValueFactory(new PropertyValueFactory<>("patronymic"));
+    }
+
+    private void booksTableInitialize() {
+        booksView.getColumns().clear();
+
+        TableColumn idCol = new TableColumn<>("id");
+        TableColumn nameCol = new TableColumn<>("name");
+        TableColumn authorCol = new TableColumn<>("author");
+        TableColumn yearCol = new TableColumn<>("year");
+
+        booksView.getColumns().addAll(idCol, nameCol, authorCol, yearCol);
+
+        idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        authorCol.setCellValueFactory(new PropertyValueFactory<>("author"));
+        yearCol.setCellValueFactory(new PropertyValueFactory<>("year"));
+    }
+
+    private void bookingsTableInitialize() {
+        bookingsView.getColumns().clear();
+
+        TableColumn idCol = new TableColumn<>("id");
+        TableColumn readerSurnameCol = new TableColumn<>("readerSurname");
+        TableColumn readerNameCol = new TableColumn<>("readerName");
+        TableColumn readerPatronymicCol = new TableColumn<>("readerPatronymic");
+        TableColumn bookNameCol = new TableColumn<>("bookName");
+        TableColumn givenDateCol = new TableColumn<>("givenDate");
+        TableColumn returnDateCol = new TableColumn<>("returnDate");
+
+        bookingsView.getColumns().addAll(idCol, readerSurnameCol, readerNameCol, readerPatronymicCol, bookNameCol, givenDateCol, returnDateCol);
+
+        idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+        readerSurnameCol.setCellValueFactory(new PropertyValueFactory<>("readerSurname"));
+        readerNameCol.setCellValueFactory(new PropertyValueFactory<>("readerName"));
+        readerPatronymicCol.setCellValueFactory(new PropertyValueFactory<>("readerPatronymic"));
+        bookNameCol.setCellValueFactory(new PropertyValueFactory<>("bookName"));
+        givenDateCol.setCellValueFactory(new PropertyValueFactory<>("givenDate"));
+        returnDateCol.setCellValueFactory(new PropertyValueFactory<>("returnDate"));
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        readersTableInitialize();
+        booksTableInitialize();
+        bookingsTableInitialize();
 
         JdbcDataSource dataSource = new JdbcDataSource();
         MessagesRepository repository = new MessagesRepositoryJdbcImpl(dataSource.getDataSource());
-        tblView.setItems(FXCollections.observableList(repository.getAllReaders()));
-
-//
-//        idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
-        //nameCol.setCellValueFactory(new PropertyValueFactory<User, String>("name"));
-        //passCol.setCellValueFactory(new PropertyValueFactory<User, String>("password"));
-
-//        tblView.getColumns().addAll(idCol, nameCol, passCol);
-//        tblView.setItems(ou);
-//        JdbcDataSource dataSource = new JdbcDataSource();
-//        MessagesRepository repository = new MessagesRepositoryJdbcImpl(dataSource.getDataSource());
-//        tblView.getColumns().clear();
+        readersView.setItems(FXCollections.observableList(repository.getAllReaders()));
+        booksView.setItems(FXCollections.observableList(repository.getAllBooks()));
+        bookingsView.setItems(FXCollections.observableList(repository.getAllBookings()));
     }
 }

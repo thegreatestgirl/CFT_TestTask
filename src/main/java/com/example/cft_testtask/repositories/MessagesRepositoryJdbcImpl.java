@@ -1,7 +1,7 @@
 package com.example.cft_testtask.repositories;
 
-import com.example.cft_testtask.models.Chatroom;
-import com.example.cft_testtask.models.Message;
+import com.example.cft_testtask.Book;
+import com.example.cft_testtask.Booking;
 import com.example.cft_testtask.Reader;
 
 import javax.sql.DataSource;
@@ -35,6 +35,50 @@ public class MessagesRepositoryJdbcImpl implements MessagesRepository {
                 readers.add(reader);
             }
             return readers;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return List.of();
+    }
+
+    @Override
+    public List<Book> getAllBooks() {
+        String mQuery = "SELECT * FROM books";
+
+        try (Connection con = dataSource.getConnection();
+             Statement st = con.createStatement()) {
+            List<Book> books = new ArrayList<>(); //perhaps linked list better?
+            ResultSet rs = st.executeQuery(mQuery);
+
+            while (rs.next()) {
+                Book book = new Book(rs.getInt("id"), rs.getString("name"), rs.getString("author"), rs.getInt("year"));
+                books.add(book);
+            }
+            return books;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return List.of();
+    }
+
+    @Override
+    public List<Booking> getAllBookings() {
+        String mQuery = "SELECT booked_books.id AS id, readers.surname AS readerSurname, readers.name AS readerName, " +
+                "readers.patronymic AS readerPatronymic, books.name AS bookName, givendate, returndate FROM booked_books " +
+                "JOIN readers ON booked_books.readerid = readers.id " +
+                "JOIN books ON booked_books.bookid = books.id";
+
+        try (Connection con = dataSource.getConnection();
+             Statement st = con.createStatement()) {
+            List<Booking> bookings = new ArrayList<>(); //perhaps linked list better?
+            ResultSet rs = st.executeQuery(mQuery);
+
+            while (rs.next()) {
+                Booking booking = new Booking(rs.getInt("id"), rs.getString("readerSurname"), rs.getString("readerName"),
+                        rs.getString("readerPatronymic"), rs.getString("bookName"), rs.getDate("givendate"), rs.getDate("returndate"));
+                bookings.add(booking);
+            }
+            return bookings;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
