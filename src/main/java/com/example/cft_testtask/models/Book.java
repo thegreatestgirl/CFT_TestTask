@@ -1,6 +1,6 @@
 package com.example.cft_testtask.models;
 
-public class Book {
+public class Book extends Basic {
     Integer id, year;
     String name, author;
 
@@ -11,10 +11,12 @@ public class Book {
         this.year = year;
     }
 
+    @Override
     public Integer getId() {
         return id;
     }
 
+    @Override
     public void setId(Integer id) {
         this.id = id;
     }

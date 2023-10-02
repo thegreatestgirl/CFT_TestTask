@@ -11,7 +11,10 @@ public interface MessagesRepository {
     List<Book> getAllBooks();
     List<Booking> getAllBookings();
 
+    Integer getLastIdAtTable();
+
     void addNewReader(Reader newReader);
-    //Optional<Message> findById(Long id);
+    void updateReader(Reader updatedReader);
+//    void deleteItemById(Integer id);
 }
 

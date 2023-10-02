@@ -16,7 +16,7 @@
     </padding>
    <TabPane fx:id="tables" prefHeight="532.0" prefWidth="568.0" tabClosingPolicy="UNAVAILABLE">
      <tabs>
-       <Tab text="Readers">
+       <Tab fx:id="readersTab" text="Readers">
          <content>
            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                   <children>
@@ -35,7 +35,7 @@
                </AnchorPane>
          </content>
        </Tab>
-       <Tab text="Books">
+       <Tab fx:id="booksTab" text="Books">
          <content>
            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                   <children>
@@ -52,7 +52,7 @@
                </AnchorPane>
          </content>
        </Tab>
-         <Tab text="Booked_books">
+         <Tab fx:id="bookedBooksTab" text="Booked_books">
             <content>
                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                   <children>
@@ -71,7 +71,9 @@
          </Tab>
      </tabs>
    </TabPane>
-   <Button fx:id="addReaderButton" mnemonicParsing="false" text="Add" onAction="#onAddReaderClick"/>
+   <Button fx:id="addReaderButton" mnemonicParsing="false" onAction="#onAddReaderClick" text="Add" />
+   <Button fx:id="updateReaderButton" mnemonicParsing="false" onAction="#onUpdateReaderClick" text="Update" />
+   <Button fx:id="deleteReaderButton" mnemonicParsing="false" onAction="#onDeleteReaderClick" text="Delete" />
 
     <Label fx:id="welcomeText" />
 </VBox>

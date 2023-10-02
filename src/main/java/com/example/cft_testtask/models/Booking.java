@@ -2,7 +2,7 @@ package com.example.cft_testtask.models;
 
 import java.util.Date;
 
-public class Booking {
+public class Booking extends Basic {
     Integer id;
     String readerSurname, readerName, readerPatronymic, bookName;
     Date givenDate, returnDate;
@@ -18,10 +18,12 @@ public class Booking {
         this.returnDate = returnDate;
     }
 
+    @Override
     public Integer getId() {
         return id;
     }
 
+    @Override
     public void setId(Integer id) {
         this.id = id;
     }

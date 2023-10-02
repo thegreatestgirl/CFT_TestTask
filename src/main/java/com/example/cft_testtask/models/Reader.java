@@ -3,7 +3,7 @@ package com.example.cft_testtask.models;
 import java.time.LocalDate;
 import java.util.Date;
 
-public class Reader {
+public class Reader extends Basic{
 
     Integer id;
     String surname, name, patronymic;
@@ -31,10 +31,12 @@ public class Reader {
         this.dateOfBirth = dateOfBirth;
     }
 
+    @Override
     public Integer getId() {
         return id;
     }
 
+    @Override
     public void setId(Integer id) {
         this.id = id;
     }

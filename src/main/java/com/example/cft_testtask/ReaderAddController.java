@@ -9,10 +9,14 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Locale;
 
 public class ReaderAddController {
     @FXML
@@ -35,11 +39,30 @@ public class ReaderAddController {
 
     private Boolean modalResult = false;
 
-    public Reader getReader() {
+    private Integer currentReaderId;
+
+    public Integer getReaderId() {
+        return currentReaderId;
+    }
+
+    public Reader getReaderProperties() {
         LocalDate localDate = dateOfBirthInput.getValue();
         Instant instant = Instant.from(localDate.atStartOfDay(ZoneId.systemDefault()));
         Date date = Date.from(instant);
-        return (new Reader(surnameInput.getText(), nameINput.getText(), patronymicInput.getText(), date));
+        return (new Reader(currentReaderId, surnameInput.getText(), nameINput.getText(), patronymicInput.getText(), date));
+    }
+
+    public void setReader(Reader reader) {
+        currentReaderId = reader.getId();
+        surnameInput.setText(reader.getSurname());
+        nameINput.setText(reader.getName());
+        patronymicInput.setText(reader.getPatronymic());
+
+        String inputt = reader.getDateOfBirth().toString();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        formatter = formatter.withLocale( Locale.US );
+        LocalDate datee = LocalDate.parse(inputt, formatter);
+        dateOfBirthInput.setValue(datee);
     }
 
     public void onReaderApplyClick(ActionEvent actionEvent) {

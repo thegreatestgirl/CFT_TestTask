@@ -12,6 +12,7 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -87,6 +88,23 @@ public class MessagesRepositoryJdbcImpl implements MessagesRepository {
     }
 
     @Override
+    public Integer getLastIdAtTable() {
+        String mQuery = "SELECT max(id) AS id FROM readers"; //order by current bookings?
+
+        try (Connection con = dataSource.getConnection();
+             Statement st = con.createStatement()) {
+            ResultSet rs = st.executeQuery(mQuery);
+            Integer maxId = null;
+            while (rs.next()) {
+                maxId = rs.getInt("id");
+            }
+            return maxId;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+    @Override
     public void addNewReader(Reader newReader) {
         try (Connection con = dataSource.getConnection();
              Statement st = con.createStatement()) {
@@ -99,6 +117,35 @@ public class MessagesRepositoryJdbcImpl implements MessagesRepository {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+    }
 
+    @Override
+    public void updateReader(Reader updatedReader) {
+        System.out.println(updatedReader.getName());
+        try (Connection con = dataSource.getConnection();
+             Statement st = con.createStatement()) {
+            String mQuery = "select id, surname, name, patronymic, dateofbirth from readers where id = ";
+            System.out.println(mQuery);
+            ResultSet rs = st.executeQuery(mQuery + updatedReader.getId());
+            while (rs.next()) {
+
+                Reader oldReader = new Reader(rs.getInt("id"), rs.getString("surname"), rs.getString("name"), rs.getString("patronymic"), rs.getDate("dateOfBirth"));
+                System.out.println(oldReader.getName());
+
+                if (!oldReader.getSurname().equals(updatedReader.getSurname()) ||
+                    !oldReader.getName().equals(updatedReader.getName()) ||
+                    !oldReader.getPatronymic().equals(updatedReader.getPatronymic()) ||
+                    !oldReader.getDateOfBirth().equals(updatedReader.getDateOfBirth())) {
+                    rs = st.executeQuery("UPDATE readers " +
+                            "SET surname = \'" + updatedReader.getSurname() + "\', " +
+                            "name = \'" + updatedReader.getName() + "\', " +
+                            "patronymic = \'" + updatedReader.getPatronymic() + "\', " +
+                            "dateofbirth = \'" + updatedReader.getDateOfBirth() + "\' " +
+                            "WHERE id = " + updatedReader.getId());
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

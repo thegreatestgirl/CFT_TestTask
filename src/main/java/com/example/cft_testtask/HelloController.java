@@ -1,5 +1,6 @@
 package com.example.cft_testtask;
 
+import com.example.cft_testtask.models.Basic;
 import com.example.cft_testtask.models.Book;
 import com.example.cft_testtask.models.Booking;
 import com.example.cft_testtask.models.Reader;
@@ -10,13 +11,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.example.cft_testtask.repositories.*;
@@ -29,6 +29,12 @@ public class HelloController implements Initializable {
     private Button addReaderButton;
 
     @FXML
+    private Button updateReaderButton;
+
+    @FXML
+    private Button deleteReaderButton;
+
+    @FXML
     private TableView<Reader> readersView;
 
     @FXML
@@ -36,6 +42,15 @@ public class HelloController implements Initializable {
 
     @FXML
     private TableView<Booking> bookingsView;
+
+    @FXML
+    private Tab bookedBooksTab;
+
+    @FXML
+    private Tab booksTab;
+
+    @FXML
+    private Tab readersTab;
 
     private void readersTableInitialize() {
         readersView.getColumns().clear();
@@ -106,6 +121,10 @@ public class HelloController implements Initializable {
         bookingsView.setItems(FXCollections.observableList(repository.getAllBookings()));
     }
 
+    private void openReaderFXMLForm() throws IOException {
+
+    }
+
     public void onAddReaderClick(ActionEvent actionEvent) throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("readerAdd.fxml"));
@@ -120,10 +139,62 @@ public class HelloController implements Initializable {
         if (controller.getModalResult()) {
             JdbcDataSource dataSource = new JdbcDataSource();
             MessagesRepository repository = new MessagesRepositoryJdbcImpl(dataSource.getDataSource());
-            repository.addNewReader(controller.getReader());
+            repository.addNewReader(controller.getReaderProperties());
             readersView.setItems(FXCollections.observableList(repository.getAllReaders()));
             // добавляем в список
             //this.foodList.add(newFood);
+        }
+    }
+
+    public void onUpdateReaderClick(ActionEvent actionEvent) throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("readerAdd.fxml"));
+        Parent root = loader.load();
+        Stage stage = new Stage();
+        stage.setScene(new Scene(root));
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.initOwner(readersView.getScene().getWindow());
+        ReaderAddController controller = loader.getController();
+
+        controller.setReader((Reader) readersView.getSelectionModel().getSelectedItem());
+
+        stage.showAndWait();
+
+        if (controller.getModalResult()) {
+
+            JdbcDataSource dataSource = new JdbcDataSource();
+            MessagesRepository repository = new MessagesRepositoryJdbcImpl(dataSource.getDataSource());
+            System.out.println(controller.getReaderProperties().getId());
+            repository.updateReader(controller.getReaderProperties());
+            readersView.setItems(FXCollections.observableList(repository.getAllReaders()));
+            // добавляем в список
+            //this.foodList.add(newFood);
+        }
+    }
+
+    public void onDeleteReaderClick(ActionEvent actionEvent) {
+        Basic basic;
+        if (readersTab.isSelected()) {
+          //  Reader reader = (Reader) readersView.getSelectionModel().getSelectedItem();
+            basic = (Reader)readersView.getSelectionModel().getSelectedItem();
+        } else if (booksTab.isSelected()) {
+            basic = (Book)booksView.getSelectionModel().getSelectedItem();
+        } else {
+            basic = (Booking)bookingsView.getSelectionModel().getSelectedItem();
+        }
+
+        System.out.println(basic.getId());
+
+        // выдаем подтверждающее сообщение
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Подтверждение");
+        alert.setHeaderText(String.format("Точно удалить?"));
+
+        // если пользователь нажал OK
+        Optional<ButtonType> option = alert.showAndWait();
+        if (option.get() == ButtonType.OK) {
+            // удаляем строку из таблицы
+            readersView.getItems().remove(basic);
         }
     }
 }
