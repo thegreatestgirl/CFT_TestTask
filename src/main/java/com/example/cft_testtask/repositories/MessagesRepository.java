@@ -1,8 +1,6 @@
 package com.example.cft_testtask.repositories;
 
-import com.example.cft_testtask.models.Book;
-import com.example.cft_testtask.models.Booking;
-import com.example.cft_testtask.models.Reader;
+import com.example.cft_testtask.models.*;
 
 import java.util.List;
 
@@ -20,5 +18,6 @@ public interface MessagesRepository {
     void updateBook(Book updatedBook);
     void updateBooking(Booking updatedBooking);
     void deleteItemById(Integer valId, String table);
+    List<ReportLine> createReport(Report report);
 }
 

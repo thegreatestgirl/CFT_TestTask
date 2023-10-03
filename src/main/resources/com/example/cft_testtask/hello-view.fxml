@@ -74,6 +74,7 @@
    <Button fx:id="addReaderButton" mnemonicParsing="false" onAction="#onAddClick" text="Add" />
    <Button fx:id="updateReaderButton" mnemonicParsing="false" onAction="#onUpdateClick" text="Update" />
    <Button fx:id="deleteReaderButton" mnemonicParsing="false" onAction="#onDeleteClick" text="Delete" />
+   <Button fx:id="reportButton" mnemonicParsing="false" text="Report" onAction="#onReportClick"/>
 
     <Label fx:id="welcomeText" />
 </VBox>

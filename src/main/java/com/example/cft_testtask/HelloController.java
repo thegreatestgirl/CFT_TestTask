@@ -35,6 +35,9 @@ public class HelloController implements Initializable {
     private Button deleteReaderButton;
 
     @FXML
+    private Button reportButton;
+
+    @FXML
     private TableView<Reader> readersView;
 
     @FXML
@@ -274,5 +277,24 @@ public class HelloController implements Initializable {
         } else {
             updateBooking(loader, stage);
         }
+    }
+
+    public void onReportClick(ActionEvent actionEvent) throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("reportCreation.fxml"));
+        Parent root = loader.load();
+        Stage stage = new Stage();
+        stage.setScene(new Scene(root));
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.initOwner(this.readersView.getScene().getWindow());
+        stage.showAndWait();
+
+//        ReaderAddController controller = loader.getController();
+//        if (controller.getModalResult()) {
+//            JdbcDataSource dataSource = new JdbcDataSource();
+//            MessagesRepository repository = new MessagesRepositoryJdbcImpl(dataSource.getDataSource());
+//            repository.addNewReader(controller.getReaderProperties());
+//            readersView.setItems(FXCollections.observableList(repository.getAllReaders()));
+//        }
     }
 }

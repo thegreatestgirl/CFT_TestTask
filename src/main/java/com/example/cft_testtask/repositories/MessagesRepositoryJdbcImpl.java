@@ -1,9 +1,7 @@
 package com.example.cft_testtask.repositories;
 
 import com.example.cft_testtask.BookingAddController;
-import com.example.cft_testtask.models.Book;
-import com.example.cft_testtask.models.Booking;
-import com.example.cft_testtask.models.Reader;
+import com.example.cft_testtask.models.*;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -241,5 +239,35 @@ public class MessagesRepositoryJdbcImpl implements MessagesRepository {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    @Override
+    public List<ReportLine> createReport(Report report) {
+        String mQuery = "select booked_books.id, books.name, books.author, books.year, " +
+                "givendate, returndate from booked_books " +
+                "join readers on readerid = readers.id " +
+                "join books on bookid = books.id " +
+                "where readerid = " +
+                "(select id from readers where surname = \'" + report.getReaderSurname() +
+                "\' and name = \'" + report.getReaderName() + "\' and patronymic = \'" +
+                report.getReaderPatronymic() + "\') and givendate >= \'" +
+                report.getWithDate() + "\' and givendate <= \'" +
+                report.getByDate() + "\'"; //order by current bookings?
+
+        try (Connection con = dataSource.getConnection();
+             Statement st = con.createStatement()) {
+            List<ReportLine> fullReport = new ArrayList<>(); //perhaps linked list better?
+            ResultSet rs = st.executeQuery(mQuery);
+
+            while (rs.next()) {
+                ReportLine reporting = new ReportLine(rs.getInt("id"), rs.getString("name"), rs.getString("author"),
+                        rs.getInt("year"), rs.getDate("givendate"), rs.getDate("returndate"));
+                fullReport.add(reporting);
+            }
+            return fullReport;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return List.of();
     }
 }
