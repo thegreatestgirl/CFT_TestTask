@@ -208,7 +208,7 @@ public class HelloController implements Initializable {
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirm");
-        alert.setHeaderText(String.format("Delete?"));
+        alert.setHeaderText(String.format("Delete? (Фll related records also will be deleted)"));
 
         Optional<ButtonType> option = alert.showAndWait();
         if (option.get() == ButtonType.OK) {
@@ -217,9 +217,11 @@ public class HelloController implements Initializable {
             if (readersTab.isSelected()) {
                 repository.deleteItemById(basic.getId(), "readers");
                 readersView.getItems().remove(basic);
+                bookingsView.setItems(FXCollections.observableList(repository.getAllBookings()));
             } else if (booksTab.isSelected()) {
                 repository.deleteItemById(basic.getId(), "books");
                 booksView.getItems().remove(basic);
+                bookingsView.setItems(FXCollections.observableList(repository.getAllBookings()));
             } else if (bookedBooksTab.isSelected()) {
                 repository.deleteItemById(basic.getId(), "booked_books");
                 bookingsView.getItems().remove(basic);
@@ -288,13 +290,5 @@ public class HelloController implements Initializable {
         stage.initModality(Modality.WINDOW_MODAL);
         stage.initOwner(this.readersView.getScene().getWindow());
         stage.showAndWait();
-
-//        ReaderAddController controller = loader.getController();
-//        if (controller.getModalResult()) {
-//            JdbcDataSource dataSource = new JdbcDataSource();
-//            MessagesRepository repository = new MessagesRepositoryJdbcImpl(dataSource.getDataSource());
-//            repository.addNewReader(controller.getReaderProperties());
-//            readersView.setItems(FXCollections.observableList(repository.getAllReaders()));
-//        }
     }
 }
