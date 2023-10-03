@@ -179,6 +179,20 @@ public class HelloController implements Initializable {
         }
     }
 
+    public void updateBooking(FXMLLoader loader, Stage stage) throws IOException {
+        BookingAddController controller = loader.getController();
+        controller.setBooking((Booking) bookingsView.getSelectionModel().getSelectedItem());
+
+        stage.showAndWait();
+
+        if (controller.getModalResult()) {
+            JdbcDataSource dataSource = new JdbcDataSource();
+            MessagesRepository repository = new MessagesRepositoryJdbcImpl(dataSource.getDataSource());
+            repository.updateBooking(controller.getBookingProperties());
+            bookingsView.setItems(FXCollections.observableList(repository.getAllBookings()));
+        }
+    }
+
     public void onDeleteClick(ActionEvent actionEvent) {
         Basic basic;
         if (readersTab.isSelected()) {
@@ -258,7 +272,7 @@ public class HelloController implements Initializable {
         } else if (booksTab.isSelected()) {
             updateBook(loader, stage);
         } else {
-
+            updateBooking(loader, stage);
         }
     }
 }

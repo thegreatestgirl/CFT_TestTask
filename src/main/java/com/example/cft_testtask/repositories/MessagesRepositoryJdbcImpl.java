@@ -204,6 +204,35 @@ public class MessagesRepositoryJdbcImpl implements MessagesRepository {
     }
 
     @Override
+    public void updateBooking(Booking updatedBooking) {
+        try (Connection con = dataSource.getConnection();
+             Statement st = con.createStatement()) {
+            String mQuery = "select booked_books.id, readers.surname, readers.name, readers.patronymic, books.name as bookname, givendate, returndate from booked_books join readers on readerid = readers.id join books on bookid = books.id where booked_books.id = ";
+            ResultSet rs = st.executeQuery(mQuery + updatedBooking.getId());
+            while (rs.next()) {
+
+                Booking oldBooking = new Booking(rs.getInt("id"), rs.getString("surname"), rs.getString("name"), rs.getString("patronymic"), rs.getString("bookname"), rs.getDate("givendate"), rs.getDate("returndate"));
+
+                if (!oldBooking.getReaderSurname().equals(updatedBooking.getReaderSurname()) ||
+                        !oldBooking.getReaderName().equals(updatedBooking.getReaderName()) ||
+                        !oldBooking.getReaderPatronymic().equals(updatedBooking.getReaderPatronymic()) ||
+                        !oldBooking.getBookName().equals(updatedBooking.getBookName()) ||
+                        !oldBooking.getGivenDate().equals(updatedBooking.getGivenDate()) ||
+                        !oldBooking.getReturnDate().equals(updatedBooking.getReturnDate())) {
+                    rs = st.executeQuery("update booked_books set readerid = " +
+                            "(select id from readers where surname = \'" + updatedBooking.getReaderSurname() + "\' " +
+                            "and name = \'" + updatedBooking.getReaderName() + "\' " +
+                            "and patronymic = \'" + updatedBooking.getReaderPatronymic() + "\'), bookid = (select id from books " +
+                            "where name = \'" + updatedBooking.getBookName() + "\'), givendate = \'" + updatedBooking.getGivenDate() + "\', returndate = \'" + updatedBooking.getReturnDate() +
+                            "\' where id = " + updatedBooking.getId());
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Override
     public void deleteItemById(Integer valId, String table) {
         try (Connection con = dataSource.getConnection();
              Statement st = con.createStatement()) {

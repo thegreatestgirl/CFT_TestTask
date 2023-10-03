@@ -18,6 +18,7 @@ public interface MessagesRepository {
     void addNewBooking(Booking newBooking);
     void updateReader(Reader updatedReader);
     void updateBook(Book updatedBook);
+    void updateBooking(Booking updatedBooking);
     void deleteItemById(Integer valId, String table);
 }
 
